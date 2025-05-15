@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/NotiSync/frontend/assets/favicon.ico" type="image/x-icon">
+    <title>NotiSync - Dashboard</title>
+    <script src="https://kit.fontawesome.com/c990447127.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/NotiSync/frontend/css/basic.css">
+    <link rel="stylesheet" href="/NotiSync/frontend/css/navigation.css">
+    <link rel="stylesheet" href="/NotiSync/frontend/css/header.css">
+    <link rel="stylesheet" href="/NotiSync/frontend/css/dashboard.css">
+    <script>
+    window.addEventListener('DOMContentLoaded', async () => {
+        try {
+            const res = await fetch('http://localhost:5050/auth/status', {
+            method: 'GET',
+            credentials: 'include'
+            });
+                if (!res.ok) {
+                window.location.href = '/NotiSync/frontend/index.html';
+                }
+            } catch {
+                window.location.href = '/NotiSync/frontend/index.html';
+            }
+        });
+    </script>
+</head>
+<body>
+    <!-- Main Container -->
+    <div class="dashboardContainer">
+        <div class="navigationMenu">
+            <img src="/NotiSync/frontend/assets/logo.png" class="menuLogo">
+
+            <div class="separator"></div>
+            
+            <ul>
+                <li class="active"><a href="#Dashboard"><i class="fa-solid fa-gauge"></i> Dashboard</a></li>
+                <li><a href="#Notifications"><i class="fa-solid fa-bell"></i> Notificações</a></li>
+                <li><a href="#Templates"><i class="fa-solid fa-file-lines"></i> Templates</a></li>
+                <li><a href="#History"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</a></li>
+            </ul>
+        </div>
+        
+        <div class="main">
+            <div class="header">
+                <p class="user">Olá, <b>user@notisync.pt</b></p>
+                <a class="logoutBtn" onclick="tryLogout()">Terminar Sessão <i class="fa-solid fa-right-from-bracket"></i></a>
+            </div>
+
+            <div class="content">
+                <h3 class="areaTitle">Dashboard</h3>
+                <div class="infoBoxes">
+                    <div class="box">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <div class="textArea">
+                            <p class="title">Total Enviadas</p>
+                            <p class="number">1546</p>
+                        </div>
+                    </div>
+
+                    <div class="box">
+                        <i class="fa-solid fa-clock"></i>
+                        <div class="textArea">
+                            <p class="title">Pendentes</p>
+                            <p class="number">245</p>
+                        </div>
+                    </div>
+
+                    <div class="box">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <div class="textArea">
+                            <p class="title">Erros</p>
+                            <p class="number">16</p>
+                        </div>
+                    </div>
+
+                    <div class="box">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <div class="textArea">
+                            <p class="title">Taxa de Sucesso</p>
+                            <p class="number">98%</p>
+                        </div>
+                    </div>
+                </div>
+                <h3 class="areaTitle">Notificações Recentes</h3>
+            </div>
+        </div>
+    </div>
+    <script src="/NotiSync/frontend/scripts/logout.js"></script>
+</body>
+</html>

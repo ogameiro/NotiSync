@@ -1,0 +1,124 @@
+.loginContainer {
+    width: 100%;
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loginContainer form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    width: 450px;
+    padding: 20px 15px;
+    border-radius: 10px;
+
+    box-shadow: 0 10px 20px rgba(33, 150, 252, 0.3);
+    background-color: #fcfcfc;
+}
+
+.loginContainer form .loginLogo {
+    display: block;
+    margin: 0 auto 0 auto;
+
+    height: auto;
+    width: 250px;
+}
+
+.loginContainer form .separator {
+    display: block;
+    margin: 0 auto 0 auto;
+
+    height: 1px;
+    background-color: #d1d1d1;
+    width: 95%;
+    border-radius: 5px;
+}
+
+.loginContainer form .error {
+    display: none;
+
+    color: #000;
+    text-align: center;
+    background-color: rgba(255, 79, 79, 0.8);
+
+    width: 100%;
+    padding: 20px 10px;
+    border-radius: 8px;
+}
+
+.loginContainer form .error.triggered {
+    display: block;
+}
+
+.loginContainer form .inputBox {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.loginContainer form .inputBox input {
+    border: 1px solid #2196fc;
+    outline: none;
+
+    width: 100%;
+    padding: 15px 5px;
+    border-radius: 5px;
+    font-size: 15px;
+}
+
+.loginContainer form .inputBox .togglePassword {
+    cursor: pointer;
+    color: #2196fc;
+    position: relative;
+    bottom: 38px;
+    left: 93%;
+    font-size: 15px;
+}
+
+.loginContainer form button {
+    cursor: pointer;
+
+    width: 100%;
+
+    font-weight: 500;
+    font-size: 15px;
+    padding: 15px 5px;
+
+    border: none;
+    border-radius: 5px;
+
+    background-color: #2196fc;
+    color: #fcfcfc;
+
+    transition: background 0.3s ease-in-out;
+}
+
+.loginContainer form button:hover {
+    background-color: #0389fc;
+}
+
+.loginContainer form .footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.loginContainer form .footer p {
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+}
+
+.loginContainer form .footer p span {
+    cursor: pointer;
+    color: #0389fc;
+}
+
+.loginContainer form .footer p span:hover {
+    text-decoration: underline;
+}

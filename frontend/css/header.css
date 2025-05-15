@@ -1,0 +1,32 @@
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    
+    background-color: #fcfcfc;
+    padding: 13px 10px;
+    box-shadow: 0 5px 10px rgba(0, 15, 27, 0.1);
+    border-radius: 5px;
+
+    font-size: 16px;
+    color: #141f28;
+}
+
+.header .logoutBtn {
+    cursor: pointer;
+    text-decoration: none;
+    color: #141f28;
+    background-color: #2196fc;
+    padding: 8px;
+    border-radius: 5px 0 0 5px;
+    border-right: 4px solid #141f28;
+
+    transition: background 0.3s ease-in-out;
+    transition: border 0.3s ease-in-out;
+}
+
+.header .logoutBtn:hover {
+    background-color: #0382f2;
+    border-right: 6px solid #141f28;
+}

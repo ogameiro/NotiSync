@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/NotiSync/frontend/assets/favicon.ico" type="image/x-icon">
+    <title>NotiSync</title>
+    <script src="https://kit.fontawesome.com/c990447127.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/NotiSync/frontend/css/basic.css">
+    <link rel="stylesheet" href="/NotiSync/frontend/css/login.css">
+    <script>
+    // Ao carregar a página de login, verifica sessão
+    window.addEventListener('DOMContentLoaded', async () => {
+        try {
+            const res = await fetch('http://localhost:5050/auth/status', {
+            method: 'GET',
+            credentials: 'include'  // envia o cookie JWT
+        });
+        
+        if (res.ok) {
+            // Já está autenticado → vai para o dashboard
+            window.location.href = '/NotiSync/frontend/pages/dashboard.html';
+        }
+        
+        // se 401 ou outro, fica na página de login
+        } catch (err) {
+        console.error('Não foi possível verificar sessão:', err);
+        // fica na página de login
+        }
+    });
+    </script>
+</head>
+<body>
+    <!-- Main Container -->
+    <div class="loginContainer">
+        <!-- Login Form -->
+        <form action="#">
+            <!-- Header -->
+            <img src="/NotiSync/frontend/assets/logo.png" class="loginLogo">
+
+            <!-- Separator -->
+            <div class="separator"></div>
+
+            <!-- Error Area -->
+            <p class="error"></p>
+        
+            <!-- Email Input Box -->
+            <div class="inputBox">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="support@notisync.pt" required />
+            </div>
+
+            <!-- Password Input Box -->
+            <div class="inputBox">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="********" required />
+                <span class="togglePassword" onclick="togglePassword()"><i class="fa-solid fa-eye"></i></span>
+            </div>
+
+            <!-- Login Button -->
+            <button type="button" onclick="tryLogin(event)">Entrar <i class="fa-solid fa-right-to-bracket"></i></button>
+
+            <!-- Separator -->
+            <div class="separator"></div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <p>Ainda não tem conta? <span>Pedir acesso</span></p>
+                <p>Esqueceu-se da palavra-passe? <span>Recuperar agora</span></p>
+            </div>
+        </form>
+    </div>
+
+    <script src="/NotiSync/frontend/scripts/loginMangement.js"></script>
+</body>
+</html>
