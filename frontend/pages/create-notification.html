@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/NotiSync/frontend/assets/favicon.ico" type="image/x-icon">
+    <title>Nova Notificação - NotiSync</title>
+    <script src="https://kit.fontawesome.com/c990447127.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/NotiSync/frontend/css/basic.css">
+    <link rel="stylesheet" href="/NotiSync/frontend/css/navigation.css">
+    <link rel="stylesheet" href="/NotiSync/frontend/css/dashboard.css">
+    <link rel="stylesheet" href="/NotiSync/frontend/css/create-notification.css">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <img src="/NotiSync/frontend/assets/logo.png" alt="NotiSync Logo" class="logo">
+            <h1>NotiSync</h1>
+        </div>
+        
+        <ul class="nav-links">
+            <li>
+                <a href="/NotiSync/frontend/pages/dashboard.html">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="/NotiSync/frontend/pages/notifications.html">
+                    <i class="fas fa-bell"></i>
+                    <span>Notificações</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="/NotiSync/frontend/pages/create-notification.html">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Nova Notificação</span>
+                </a>
+            </li>
+            <li>
+                <a href="/NotiSync/frontend/pages/templates.html">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Templates</span>
+                </a>
+            </li>
+            <li>
+                <a href="/NotiSync/frontend/pages/history.html">
+                    <i class="fas fa-history"></i>
+                    <span>Histórico</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <a href="#" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Sair</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="top-bar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Pesquisar...">
+            </div>
+            <div class="user-menu">
+                <span class="user-name">Utilizador</span>
+                <i class="fas fa-user-circle avatar"></i>
+            </div>
+        </header>
+
+        <div class="create-notification-content">
+            <div class="page-header">
+                <h2>Nova Notificação</h2>
+                <div class="header-actions">
+                    <button class="action-button secondary" onclick="window.location.href='/NotiSync/frontend/pages/notifications.html'">
+                        <i class="fas fa-times"></i>
+                        Cancelar
+                    </button>
+                    <button class="action-button" onclick="saveNotification()">
+                        <i class="fas fa-save"></i>
+                        Salvar
+                    </button>
+                </div>
+            </div>
+
+            <form id="notification-form" class="notification-form">
+                <!-- Informações Básicas -->
+                <div class="form-section">
+                    <h3>Informações Básicas</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="title">Título *</label>
+                            <input type="text" id="title" name="title" required placeholder="Digite o título da notificação">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="type">Tipo *</label>
+                            <select id="type" name="type" required>
+                                <option value="">Selecione o tipo</option>
+                                <option value="alert">Alerta</option>
+                                <option value="info">Informação</option>
+                                <option value="warning">Aviso</option>
+                                <option value="success">Sucesso</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="priority">Prioridade *</label>
+                            <select id="priority" name="priority" required>
+                                <option value="">Selecione a prioridade</option>
+                                <option value="high">Alta</option>
+                                <option value="medium">Média</option>
+                                <option value="low">Baixa</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="template">Template</label>
+                            <select id="template" name="template">
+                                <option value="">Selecione um template</option>
+                                <option value="default">Template Padrão</option>
+                                <option value="alert">Template de Alerta</option>
+                                <option value="news">Template de Notícias</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conteúdo -->
+                <div class="form-section">
+                    <h3>Conteúdo</h3>
+                    <div class="form-group">
+                        <label for="content">Mensagem *</label>
+                        <textarea id="content" name="content" rows="6" required placeholder="Digite o conteúdo da notificação"></textarea>
+                    </div>
+                </div>
+
+                <!-- Destinatários -->
+                <div class="form-section">
+                    <h3>Destinatários</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="channels">Canais de Envio *</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="channels" value="email" onchange="validateChannels()">
+                                    <span>Email</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="channels" value="sms" onchange="validateChannels()">
+                                    <span>SMS</span>
+                                </label>
+                            </div>
+                            <small class="form-text">Selecione pelo menos um canal de envio</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recipients">Destinatários *</label>
+                            <textarea id="recipients" name="recipients" rows="4" required 
+                                placeholder="Digite os emails ou números de telefone separados por vírgula&#10;Exemplo:&#10;email1@exemplo.com, email2@exemplo.com&#10;+55 11 99999-9999, +55 11 98888-8888"
+                                onchange="validateRecipients()"></textarea>
+                            <small class="form-text">Digite os destinatários separados por vírgula. Se ambos os canais estiverem selecionados, inclua pelo menos um email e um número de telefone.</small>
+                            <div id="recipients-error" class="error-message" style="display: none; color: #dc2626; margin-top: 0.5rem;"></div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="/NotiSync/frontend/scripts/create-notification.js"></script>
+    <script src="/NotiSync/frontend/scripts/notifications.js"></script>
+</body>
+</html> 

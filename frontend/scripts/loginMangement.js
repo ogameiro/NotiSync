@@ -25,11 +25,8 @@ function triggerError(type) {
   // Mensagem por tipo de erro
   let msg;
   switch (type) {
-    case "wrongPassword":
-      msg = "Palavra-passe incorreta. Tente novamente!";
-      break;
-    case "wrongEmail":
-      msg = "Email incorreto ou inválido. Tente novamente!";
+    case "wrongInput":
+      msg = "Email ou Palavra-passe incorretos. Tente novamente!";
       break;
     case "invalidInput":
       msg = "Preencha todos os campos e tente novamente.";
@@ -76,8 +73,8 @@ async function tryLogin(e) {
       window.location.href = '/NotiSync/frontend/pages/dashboard.html';
     } else {
       // Tratar erros específicos devolvidos pelo Flask
-      console.warn('Erro no login:', data.message);
-      triggerError(data.message || 'Erro no login');
+      console.warn('Erro no login:', data.message, data.error);
+      triggerError(data.error || 'Erro no login');
     }
   } catch (err) {
     console.error('Erro de rede:', err);

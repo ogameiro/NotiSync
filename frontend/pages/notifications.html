@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/NotiSync/frontend/assets/favicon.ico" type="image/x-icon">
+    <title>Notificações - NotiSync</title>
+    <script src="https://kit.fontawesome.com/c990447127.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/NotiSync/frontend/css/basic.css">
+    <link rel="stylesheet" href="/NotiSync/frontend/css/navigation.css">
+    <link rel="stylesheet" href="/NotiSync/frontend/css/dashboard.css">
+    <link rel="stylesheet" href="/NotiSync/frontend/css/notifications.css">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <img src="/NotiSync/frontend/assets/logo.png" alt="NotiSync Logo" class="logo">
+            <h1>NotiSync</h1>
+        </div>
+        
+        <ul class="nav-links">
+            <li>
+                <a href="/NotiSync/frontend/pages/dashboard.html">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="/NotiSync/frontend/pages/notifications.html">
+                    <i class="fas fa-bell"></i>
+                    <span>Notificações</span>
+                </a>
+            </li>
+            <li>
+                <a href="/NotiSync/frontend/pages/create-notification.html">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Nova Notificação</span>
+                </a>
+            </li>
+            <li>
+                <a href="/NotiSync/frontend/pages/templates.html">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Templates</span>
+                </a>
+            </li>
+            <li>
+                <a href="/NotiSync/frontend/pages/history.html">
+                    <i class="fas fa-history"></i>
+                    <span>Histórico</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <a href="#" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Sair</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="top-bar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Pesquisar notificações..." oninput="carregarNotificacoes(1)">
+            </div>
+            <div class="user-menu">
+                <span class="user-name">Utilizador</span>
+                <i class="fas fa-user-circle avatar"></i>
+            </div>
+        </header>
+
+        <div class="notifications-content">
+            <div class="notifications-header">
+                <h2>Notificações</h2>
+                <button class="action-button" onclick="window.location.href='/NotiSync/frontend/pages/create-notification.html'">
+                    <i class="fas fa-plus"></i>
+                    Nova Notificação
+                </button>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filters-section">
+                <div class="filter-group">
+                    <label for="status-filter">Status:</label>
+                    <select id="status-filter" class="filter-select" onchange="carregarNotificacoes(1)">
+                        <option value="all">Todos</option>
+                        <option value="pending">Pendentes</option>
+                        <option value="sent">Enviadas</option>
+                        <option value="failed">Falhas</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="type-filter">Tipo:</label>
+                    <select id="type-filter" class="filter-select" onchange="carregarNotificacoes(1)">
+                        <option value="all">Todos</option>
+                        <option value="alert">Alerta</option>
+                        <option value="info">Informação</option>
+                        <option value="warning">Aviso</option>
+                        <option value="success">Sucesso</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="date-filter">Data:</label>
+                    <input type="date" id="date-filter" class="filter-input" onchange="carregarNotificacoes(1)">
+                </div>
+            </div>
+
+            <!-- Lista de Notificações -->
+            <div class="notifications-list">
+                <div class="notifications-table">
+                    <table id="tabelaNotificacoes">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" id="select-all" onchange="updateSelectAll()">
+                                </th>
+                                <th>Data</th>
+                                <th>Mensagem</th>
+                                <th>Tipo</th>
+                                <th>Destinatário</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Notificações serão inseridas aqui via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Paginação -->
+                <div class="pagination">
+                    <!-- Paginação será atualizada via JavaScript -->
+                </div>
+            </div>
+
+            <!-- Ações em Lote -->
+            <div class="bulk-actions" style="display: none;">
+                <span class="selected-count">0 itens selecionados</span>
+                <div class="batch-buttons">
+                    <button class="batch-button" onclick="batchAction('delete')">
+                        <i class="fas fa-trash"></i>
+                        Excluir
+                    </button>
+                    <button class="batch-button" onclick="batchAction('resend')">
+                        <i class="fas fa-paper-plane"></i>
+                        Reenviar
+                    </button>
+                    <button class="batch-button" onclick="batchAction('export')">
+                        <i class="fas fa-download"></i>
+                        Exportar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de Detalhes -->
+    <div id="notificationDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Detalhes da Notificação</h2>
+                <button class="close-button" onclick="closeNotificationDetails()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Conteúdo será preenchido via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script src="/NotiSync/frontend/scripts/notifications.js"></script>
+</body>
+</html> 

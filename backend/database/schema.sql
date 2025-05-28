@@ -38,12 +38,20 @@ CREATE TABLE `notificationstatus` (
 CREATE TABLE `templates` (
   `template_id` INT AUTO_INCREMENT PRIMARY KEY,
   `name` VARCHAR(255) NOT NULL,
-  `subject` VARCHAR(255) NOT NULL,
-  `body` TEXT NOT NULL,
+  `description` TEXT NULL,
+  `type_id` INT NOT NULL,
+  `category` VARCHAR(50) NULL,
+  `content` TEXT NOT NULL,
+  `is_active` BOOLEAN NOT NULL DEFAULT TRUE,
   `created_by` INT NOT NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `usage_count` INT NOT NULL DEFAULT 0,
   FOREIGN KEY (`created_by`)
     REFERENCES `users`(`user_id`)
+    ON DELETE RESTRICT,
+  FOREIGN KEY (`type_id`)
+    REFERENCES `notificationtypes`(`type_id`)
     ON DELETE RESTRICT
 ) ENGINE=InnoDB;
 
@@ -67,6 +75,8 @@ CREATE TABLE `notifications` (
   `template_id` INT NULL,
   `sender_id` INT NOT NULL,
   `content_override` TEXT NULL,
+  `priority` ENUM('baixa', 'normal', 'alta') NOT NULL DEFAULT 'normal',
+  `category` VARCHAR(50) NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (`type_id`)
     REFERENCES `notificationtypes`(`type_id`)
@@ -84,6 +94,9 @@ CREATE TABLE `notificationschedules` (
   `notification_id` INT NOT NULL,
   `send_at` DATETIME NOT NULL,
   `recurrence_rule` VARCHAR(255) NULL,
+  `is_active` BOOLEAN NOT NULL DEFAULT TRUE,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (`notification_id`)
     REFERENCES `notifications`(`notification_id`)
     ON DELETE CASCADE
@@ -96,6 +109,8 @@ CREATE TABLE `channelconfigs` (
   `channel_id` INT NOT NULL,
   `key` VARCHAR(255) NOT NULL,
   `value` TEXT NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (`channel_id`)
     REFERENCES `channels`(`channel_id`)
     ON DELETE CASCADE
@@ -111,6 +126,8 @@ CREATE TABLE `notificationlogs` (
   `status_id` INT NOT NULL,
   `error_message` TEXT NULL,
   `attempted_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `attempts` INT NOT NULL DEFAULT 0,
+  `last_attempt` TIMESTAMP NULL,
   FOREIGN KEY (`notification_id`)
     REFERENCES `notifications`(`notification_id`)
     ON DELETE CASCADE,
@@ -124,3 +141,21 @@ CREATE TABLE `notificationlogs` (
     REFERENCES `notificationstatus`(`status_id`)
     ON DELETE RESTRICT
 ) ENGINE=InnoDB;
+
+-- 7. Dados Iniciais
+
+INSERT INTO `notificationtypes` (`name`, `description`) VALUES
+('Email', 'Notificações enviadas por email'),
+('SMS', 'Notificações enviadas por SMS'),
+('Push', 'Notificações push para aplicações móveis');
+
+INSERT INTO `channels` (`name`, `description`) VALUES
+('Email SMTP', 'Canal de email via SMTP'),
+('SMS Gateway', 'Canal de SMS via gateway'),
+('Firebase Cloud Messaging', 'Canal de push notifications via FCM');
+
+INSERT INTO `notificationstatus` (`name`) VALUES
+('Pendente'),
+('Enviado'),
+('Erro'),
+('Cancelado');

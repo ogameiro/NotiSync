@@ -18,12 +18,28 @@ def token_required(f):
                 settings.JWT_SECRET,
                 algorithms=[settings.JWT_ALGORITHM]
             )
-            # Ajusta conforme a claim usada (sub/email)
-            request.user = payload.get('sub') or payload.get('email')
+            # Extrair user_id do payload e garantir que é um inteiro
+            user_id_from_token = payload.get('sub')
+            if user_id_from_token is None:
+                 # Se 'sub' não estiver presente, tentar 'user_id' (caso o payload use nome diferente)
+                user_id_from_token = payload.get('user_id')
+
+            if user_id_from_token is None:
+                return jsonify({'message': 'ID do usuário não encontrado no token.'}), 401
+                
+            try:
+                request.user = int(user_id_from_token)
+            except (ValueError, TypeError):
+                return jsonify({'message': 'Formato do ID do usuário no token inválido.'}), 401
+
         except jwt.ExpiredSignatureError:
             return jsonify({'message': 'Token expirou.'}), 401
         except jwt.InvalidTokenError:
             return jsonify({'message': 'Token inválido.'}), 401
+        except Exception as e:
+             # Capturar outros erros inesperados na decodificação ou processamento do token
+            return jsonify({'message': f'Erro ao processar token: {str(e)}'}), 401
+            
         return f(*args, **kwargs)
     return decorated
 
@@ -33,7 +49,8 @@ def login():
     email = data.get('email')
     password = data.get('password')
     if not email or not password:
-        return jsonify({'message': 'Falta email ou password.'}), 400
+        return jsonify({'message': 'Falta email ou password.',
+                        'error': 'invalidInput'}), 400
 
     # 1) Pede ao PHP o token
     resp = requests.post(settings.PHP_AUTH_URL, json={
@@ -41,29 +58,49 @@ def login():
         'password': password
     })
     if resp.status_code != 200:
-        return jsonify({'message': 'Credenciais inválidas.'}), 401
+        # Tentar extrair mensagem de erro do PHP se disponível
+        try:
+            error_body = resp.json()
+            error_message = error_body.get('message', 'Credenciais inválidas.')
+            error_type = error_body.get('type', 'wrongInput')
+            return jsonify({'message': error_message,
+                            'error': error_type}), resp.status_code
+        except Exception:
+            # Fallback para mensagem genérica se JSON não for válido
+            return jsonify({'message': 'Credenciais inválidas.',
+                            'error': 'wrongInput'}), resp.status_code
 
     body = resp.json()
-    access_token = body.get('access_token')
-    if not access_token:
+    # Precisamos obter o user_id do payload retornado pelo PHP
+    access_token_from_php = body.get('access_token')
+    if not access_token_from_php:
         return jsonify({'message': 'Token não recebido do PHP.'}), 500
 
-    # 2) Decodifica sem verificar assinatura, só para ler payload
+    # Decodifica o token do PHP SEM verificar assinatura para ler o payload
     try:
-        orig = jwt.decode(access_token, options={"verify_signature": False})
-    except Exception:
-        return jsonify({'message': 'Token PHP corrompido.'}), 500
+        php_payload = jwt.decode(access_token_from_php, options={"verify_signature": False})
+        user_id = php_payload.get('sub') # O user_id deve estar no claim 'sub' ou similar no token do PHP
+        if user_id is None:
+             # Tentar outro nome de claim se 'sub' não funcionar (verificar o token do PHP)
+             user_id = php_payload.get('user_id') # Exemplo, se o PHP usa 'user_id'
+             
+        if user_id is None:
+             return jsonify({'message': 'ID do usuário não encontrado no payload do token PHP.'}), 500
 
-    # 3) Re-assina localmente para controlar expiração
+    except Exception as e:
+        return jsonify({'message': f'Erro ao decodificar ou ler payload do token PHP: {str(e)}'}), 500
+
+    # 3) Re-assina localmente para controlar expiração, USANDO o user_id do PHP
     new_payload = {
-        'sub': orig.get('sub'),
-        'name': orig.get('name'),
+        'sub': user_id, # AGORA usamos o user_id numérico
+        'name': php_payload.get('name'), # Manter outros claims úteis
+        'email': php_payload.get('email'), # Manter outros claims úteis
         'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=settings.ACCESS_TOKEN_EXP)
     }
     new_token = jwt.encode(new_payload, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
 
     # 4) Devolve cookie seguro
-    resposta = make_response(jsonify({'message': 'Login efetuado.'}))
+    resposta = make_response(jsonify({'message': 'Login efetuado.', 'user_id': user_id})) # Opcional: retornar user_id no body
     resposta.set_cookie(
         'jwt_token',
         new_token,
@@ -87,9 +124,5 @@ def protected():
 @auth_bp.route('/status', methods=['GET'])
 @token_required
 def status():
-    """
-    Verifica se o cookie JWT é válido.
-    Se válido, devolve 200; se não, o decorator já devolve 401.
-    """
     return jsonify({'logged_in': True, 'user': request.user})
 

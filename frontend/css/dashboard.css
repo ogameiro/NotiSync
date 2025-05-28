@@ -1,69 +1,293 @@
-.dashboardContainer {
-    width: 100%;
+/* Layout Base */
+:root {
+    --primary-color: #2563eb;
+    --secondary-color: #1e40af;
+    --background-color: #f1f5f9;
+    --sidebar-width: 250px;
+    --header-height: 60px;
+    --card-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --success-color: #22c55e;
+    --warning-color: #eab308;
+    --error-color: #ef4444;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: var(--background-color);
     min-height: 100vh;
-
-    display: flex;
-    flex-direction: row;
+    position: relative;
 }
 
-.dashboardContainer .main {
-    width: 100%;
-    max-height: 100vh;
-
-    margin: 10px 20px;
+/* Main Content */
+.main-content {
+    position: relative;
+    margin-left: var(--sidebar-width);
+    min-height: 100vh;
+    width: calc(100% - var(--sidebar-width));
 }
 
-.dashboardContainer .main .content {
+/* Top Bar */
+.top-bar {
+    height: var(--header-height);
+    background-color: white;
+    box-shadow: var(--card-shadow);
     display: flex;
-    flex-direction: column;
-    gap: 15px;
-
-    width: 100%;
-    max-height: 85vh;
-
-    margin: 10px 0px;
-}
-
-.dashboardContainer .main .content .infoBoxes {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    width: 100%;
-}
-
-.dashboardContainer .main .content .infoBoxes .box {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
     align-items: center;
-
-    background-color: #fcfcfc;
-    box-shadow: 0 5px 10px rgba(0, 15, 27, 0.1);
-
-    width: 25%;
-    padding: 25px;
-    border-radius: 5px;
-    border: 1px solid #0382f2;
+    justify-content: space-between;
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 90;
 }
 
-.dashboardContainer .main .content .infoBoxes .box i {
-    font-size: 25px;
-    color: #2196fc;
-}
-
-.dashboardContainer .main .content .infoBoxes .box .textArea {
+.search-box {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
-    gap: 10px;
-
-    font-size: 16px;
-    color: #141f28;
-    text-align: center;
+    background-color: #f3f4f6;
+    border-radius: 0.375rem;
+    padding: 0.5rem 1rem;
+    width: 300px;
 }
 
-.dashboardContainer .main .content .infoBoxes .box .textArea .title {
-    font-size: 18px;
+.search-box i {
+    color: #6b7280;
+    margin-right: 0.5rem;
+}
+
+.search-box input {
+    border: none;
+    background: none;
+    outline: none;
+    width: 100%;
+    color: #1f2937;
+}
+
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.user-name {
+    color: #1f2937;
     font-weight: 500;
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Dashboard Content */
+.dashboard-content {
+    padding: 2rem;
+}
+
+.dashboard-content h2 {
+    margin: 0 0 1.5rem;
+    color: #1f2937;
+    font-size: 1.5rem;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background-color: white;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-shadow: var(--card-shadow);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 0.375rem;
+    background-color: #eff6ff;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.stat-info h3 {
+    margin: 0;
+    color: #6b7280;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.stat-number {
+    margin: 0.25rem 0;
+    color: #1f2937;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.stat-change {
+    margin: 0;
+    font-size: 0.875rem;
+}
+
+.stat-change.positive {
+    color: var(--success-color);
+}
+
+.stat-change.negative {
+    color: var(--error-color);
+}
+
+/* Dashboard Sections */
+.dashboard-section {
+    background-color: white;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 1.5rem;
+}
+
+.dashboard-section h3 {
+    margin: 0 0 1rem;
+    color: #1f2937;
+    font-size: 1.125rem;
+}
+
+/* Activity List */
+.activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 0.375rem;
+    background-color: #f9fafb;
+}
+
+.activity-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+}
+
+.activity-icon.success {
+    background-color: #dcfce7;
+    color: var(--success-color);
+}
+
+.activity-icon.warning {
+    background-color: #fef9c3;
+    color: var(--warning-color);
+}
+
+.activity-icon.error {
+    background-color: #fee2e2;
+    color: var(--error-color);
+}
+
+.activity-details {
+    flex-grow: 1;
+}
+
+.activity-title {
+    margin: 0;
+    color: #1f2937;
+    font-weight: 500;
+}
+
+.activity-meta {
+    margin: 0.25rem 0 0;
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+/* Quick Actions */
+.quick-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.action-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.action-button:hover {
+    background-color: var(--secondary-color);
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 64px;
+        width: calc(100% - 64px);
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .search-box {
+        width: 200px;
+    }
+}
+
+@media (max-width: 640px) {
+    .top-bar {
+        padding: 0 1rem;
+    }
+
+    .search-box {
+        display: none;
+    }
+
+    .dashboard-content {
+        padding: 1rem;
+    }
+
+    .quick-actions {
+        flex-direction: column;
+    }
+
+    .action-button {
+        width: 100%;
+        justify-content: center;
+    }
 }

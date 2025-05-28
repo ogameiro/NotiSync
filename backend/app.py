@@ -3,24 +3,40 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import config.settings as settings
 from routes.sessions import auth_bp
+from routes.dashboard import dashboard_bp
+from routes.notifications import notifications_bp
+from routes.templates import templates_bp
 
 def create_app():
     app = Flask(__name__)
+
+    # configura a URI do SQLAlchemy
+    app.config['SQLALCHEMY_DATABASE_URI'] = (
+        f"{settings.DB_CONNECTION}://{settings.DB_USERNAME}:{settings.DB_PASSWORD}"
+        f"@{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_DATABASE}"
+    )
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+    # inicializa o db com a app
+    settings.db.init_app(app)
+
     app.config['SECRET_KEY'] = settings.JWT_SECRET
     app.config.from_object(settings)
 
     # --- ATIVA O CORS ---
-    # Allow http://localhost a aceder, com cookies (credentials)
+    # Permite todas as rotas da API para http://localhost e http://localhost:5050
     CORS(app,
          supports_credentials=True,
-         resources={
-           r"/auth/*": {
-             "origins": "http://localhost"
-           }
-         }
+         origins=["http://localhost", "http://localhost:5050", "http://127.0.0.1", "http://127.0.0.1:5050"],
+         allow_headers=["Content-Type", "Authorization"],
+         methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+         expose_headers=["Content-Type", "Authorization"]
     )
 
+    app.register_blueprint(dashboard_bp)
     app.register_blueprint(auth_bp)
+    app.register_blueprint(notifications_bp)
+    app.register_blueprint(templates_bp)
 
     @app.route('/', methods=['GET'])
     def home():

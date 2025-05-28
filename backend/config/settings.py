@@ -2,10 +2,15 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from flask_sqlalchemy import SQLAlchemy
 
 # encontra o .env na raiz do projecto
 BASE_DIR = Path(__file__).parent.parent
 load_dotenv(BASE_DIR / '.env')
+
+# instancia o SQLAlchemy
+db = SQLAlchemy()
+
 
 # --- Configuração da Base de Dados (se precisares noutros módulos) ---
 DB_CONNECTION     = os.getenv('DB_CONNECTION', 'mysql')

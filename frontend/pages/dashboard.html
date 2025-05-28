@@ -1,92 +1,185 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="/NotiSync/frontend/assets/favicon.ico" type="image/x-icon">
-    <title>NotiSync - Dashboard</title>
+    <title>Dashboard - NotiSync</title>
     <script src="https://kit.fontawesome.com/c990447127.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="/NotiSync/frontend/css/basic.css">
     <link rel="stylesheet" href="/NotiSync/frontend/css/navigation.css">
-    <link rel="stylesheet" href="/NotiSync/frontend/css/header.css">
     <link rel="stylesheet" href="/NotiSync/frontend/css/dashboard.css">
-    <script>
-    window.addEventListener('DOMContentLoaded', async () => {
-        try {
-            const res = await fetch('http://localhost:5050/auth/status', {
-            method: 'GET',
-            credentials: 'include'
-            });
-                if (!res.ok) {
-                window.location.href = '/NotiSync/frontend/index.html';
-                }
-            } catch {
-                window.location.href = '/NotiSync/frontend/index.html';
-            }
-        });
-    </script>
 </head>
 <body>
-    <!-- Main Container -->
-    <div class="dashboardContainer">
-        <div class="navigationMenu">
-            <img src="/NotiSync/frontend/assets/logo.png" class="menuLogo">
-
-            <div class="separator"></div>
-            
-            <ul>
-                <li class="active"><a href="#Dashboard"><i class="fa-solid fa-gauge"></i> Dashboard</a></li>
-                <li><a href="#Notifications"><i class="fa-solid fa-bell"></i> Notificações</a></li>
-                <li><a href="#Templates"><i class="fa-solid fa-file-lines"></i> Templates</a></li>
-                <li><a href="#History"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</a></li>
-            </ul>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <img src="/NotiSync/frontend/assets/logo.png" alt="NotiSync Logo" class="logo">
+            <h1>NotiSync</h1>
         </div>
         
-        <div class="main">
-            <div class="header">
-                <p class="user">Olá, <b>user@notisync.pt</b></p>
-                <a class="logoutBtn" onclick="tryLogout()">Terminar Sessão <i class="fa-solid fa-right-from-bracket"></i></a>
+        <ul class="nav-links">
+            <li class="active">
+                <a href="/NotiSync/frontend/pages/dashboard.html">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="/NotiSync/frontend/pages/notifications.html">
+                    <i class="fas fa-bell"></i>
+                    <span>Notificações</span>
+                </a>
+            </li>
+            <li>
+                <a href="/NotiSync/frontend/pages/create-notification.html">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Nova Notificação</span>
+                </a>
+            </li>
+            <li>
+                <a href="/NotiSync/frontend/pages/templates.html">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Templates</span>
+                </a>
+            </li>
+            <li>
+                <a href="/NotiSync/frontend/pages/history.html">
+                    <i class="fas fa-history"></i>
+                    <span>Histórico</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <a href="#" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Sair</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="top-bar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Pesquisar...">
+            </div>
+            <div class="user-menu">
+                <span class="user-name"></span>
+                <i class="fas fa-user-circle avatar"></i>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <h2>Dashboard</h2>
+            
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Enviadas</h3>
+                        <p class="stat-number">1,234</p>
+                        <p class="stat-change positive">+12% esta semana</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Pendentes</h3>
+                        <p class="stat-number">45</p>
+                        <p class="stat-change">5 agendadas</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Erros</h3>
+                        <p class="stat-number">3</p>
+                        <p class="stat-change negative">-2% esta semana</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Taxa de Entrega</h3>
+                        <p class="stat-number">99.8%</p>
+                        <p class="stat-change positive">+0.2% esta semana</p>
+                    </div>
+                </div>
             </div>
 
-            <div class="content">
-                <h3 class="areaTitle">Dashboard</h3>
-                <div class="infoBoxes">
-                    <div class="box">
-                        <i class="fa-solid fa-paper-plane"></i>
-                        <div class="textArea">
-                            <p class="title">Total Enviadas</p>
-                            <p class="number">1546</p>
+            <!-- Recent Activity -->
+            <div class="dashboard-section">
+                <h3>Atividade Recente</h3>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-icon success">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="activity-details">
+                            <p class="activity-title">Notificação enviada com sucesso</p>
+                            <p class="activity-meta">Email • João Silva • há 5 minutos</p>
                         </div>
                     </div>
 
-                    <div class="box">
-                        <i class="fa-solid fa-clock"></i>
-                        <div class="textArea">
-                            <p class="title">Pendentes</p>
-                            <p class="number">245</p>
+                    <div class="activity-item">
+                        <div class="activity-icon warning">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="activity-details">
+                            <p class="activity-title">Notificação agendada</p>
+                            <p class="activity-meta">SMS • Maria Santos • para 15:30</p>
                         </div>
                     </div>
 
-                    <div class="box">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                        <div class="textArea">
-                            <p class="title">Erros</p>
-                            <p class="number">16</p>
+                    <div class="activity-item">
+                        <div class="activity-icon error">
+                            <i class="fas fa-times"></i>
                         </div>
-                    </div>
-
-                    <div class="box">
-                        <i class="fa-solid fa-circle-check"></i>
-                        <div class="textArea">
-                            <p class="title">Taxa de Sucesso</p>
-                            <p class="number">98%</p>
+                        <div class="activity-details">
+                            <p class="activity-title">Falha no envio</p>
+                            <p class="activity-meta">Push • Pedro Costa • há 15 minutos</p>
                         </div>
                     </div>
                 </div>
-                <h3 class="areaTitle">Notificações Recentes</h3>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="dashboard-section">
+                <h3>Ações Rápidas</h3>
+                <div class="quick-actions">
+                    <button class="action-button">
+                        <i class="fas fa-plus"></i>
+                        Nova Notificação
+                    </button>
+                    <button class="action-button">
+                        <i class="fas fa-file-alt"></i>
+                        Criar Template
+                    </button>
+                    <button class="action-button">
+                        <i class="fas fa-download"></i>
+                        Exportar Relatório
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
-    <script src="/NotiSync/frontend/scripts/logout.js"></script>
+    </main>
+
+    <script src="/NotiSync/frontend/scripts/dashboard.js"></script>
+    <script src="/NotiSync/frontend/scripts/notifications.js"></script>
 </body>
 </html>
