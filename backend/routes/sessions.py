@@ -3,6 +3,7 @@ from flask import Blueprint, request, jsonify, make_response
 import requests, jwt, datetime
 from functools import wraps
 import config.settings as settings
+from models.user import User
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -124,5 +125,14 @@ def protected():
 @auth_bp.route('/status', methods=['GET'])
 @token_required
 def status():
-    return jsonify({'logged_in': True, 'user': request.user})
+    # Buscar o usuário no banco de dados para obter o email
+    user = User.query.get(request.user)
+    if not user:
+        return jsonify({'message': 'Usuário não encontrado'}), 404
+        
+    return jsonify({
+        'logged_in': True, 
+        'user': user.email,  # Para exibição no frontend
+        'user_id': user.user_id  # Para uso interno (notificações, etc)
+    })
 

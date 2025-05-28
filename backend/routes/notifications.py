@@ -4,12 +4,13 @@ from datetime import datetime
 from config.settings import db
 from routes.sessions import token_required
 from services.notification_service import NotificationService
+from models.user import User  # Importando o modelo User do arquivo correto
 import traceback
 
 notifications_bp = Blueprint('notifications', __name__, url_prefix='/notifications')
 
 # Modelos da base de dados
-from routes.dashboard import Notification, NotificationLog, NotificationType, NotificationStatus, Channel, User
+from routes.dashboard import Notification, NotificationLog, NotificationType, NotificationStatus, Channel
 from routes.templates import Template  # Importando Template do arquivo correto
 
 # Listar notificações

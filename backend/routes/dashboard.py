@@ -3,19 +3,11 @@ from sqlalchemy import func, desc
 from datetime import datetime
 from config.settings import db
 from routes.sessions import token_required
+from models.user import User  # Importando o modelo User do arquivo correto
 
 dashboard_bp = Blueprint('dashboard', __name__, url_prefix='/dashboard')
 
 # Modelos da base de dados
-class User(db.Model):
-    __tablename__ = 'users'
-    user_id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), nullable=False)
-    email = db.Column(db.String(255), unique=True, nullable=False)
-    password = db.Column(db.String(255), nullable=False) # Note: storing hash, not plain password
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-
 class NotificationLog(db.Model):
     __tablename__ = 'notificationlogs'
     log_id = db.Column(db.Integer, primary_key=True)
@@ -34,13 +26,14 @@ class NotificationStatus(db.Model):
 class Notification(db.Model):
     __tablename__ = 'notifications'
     notification_id = db.Column(db.Integer, primary_key=True)
-    type_id = db.Column(db.Integer, db.ForeignKey('notificationtypes.type_id'))
-    sender_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    template_id = db.Column(db.Integer, db.ForeignKey('templates.template_id'), nullable=True)
+    type_id = db.Column(db.Integer, nullable=False)
+    template_id = db.Column(db.Integer)
     content_override = db.Column(db.Text)
-    priority = db.Column(db.String(20), default='Normal')
+    priority = db.Column(db.String(50), default='normal')
+    category = db.Column(db.String(50))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    sender_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
 
 class NotificationType(db.Model):
     __tablename__ = 'notificationtypes'

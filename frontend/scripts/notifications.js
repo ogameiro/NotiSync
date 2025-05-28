@@ -148,6 +148,21 @@ async function duplicarTemplate(id) {
 // Funções de carregamento de dados
 async function carregarNotificacoes(page = 1, filtros = {}) {
     try {
+        // Verificar autenticação antes de carregar dados
+        const authRes = await fetch('http://localhost:5050/auth/status', {
+            method: 'GET',
+            credentials: 'include'
+        });
+        
+        if (!authRes.ok) {
+            window.location.href = '/NotiSync/frontend/index.html';
+            return;
+        }
+
+        const authData = await authRes.json();
+        document.querySelector('.user-name').textContent = authData.user;
+
+        // Carregar dados das notificações
         const data = await listarNotificacoes(page, filtros);
         const tbody = document.querySelector('#tabelaNotificacoes tbody');
         if (!tbody) return;

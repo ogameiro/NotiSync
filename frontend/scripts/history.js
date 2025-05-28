@@ -64,6 +64,21 @@ async function showNotificationDetails(notificationId) {
 // Carregar histórico
 async function carregarHistorico(page = 1, filtros = {}) {
     try {
+        // Verificar autenticação antes de carregar dados
+        const authRes = await fetch('http://localhost:5050/auth/status', {
+            method: 'GET',
+            credentials: 'include'
+        });
+        
+        if (!authRes.ok) {
+            window.location.href = '/NotiSync/frontend/index.html';
+            return;
+        }
+
+        const authData = await authRes.json();
+        document.querySelector('.user-name').textContent = authData.user;
+
+        // Carregar dados do histórico
         const params = new URLSearchParams({
             page,
             per_page: 10,

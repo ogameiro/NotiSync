@@ -99,13 +99,26 @@ async function duplicateTemplate(templateId) {
 // Carregar templates
 async function carregarTemplates(page = 1, filtros = {}) {
     try {
-        const params = new URLSearchParams({
+        // Verificar autenticação antes de carregar dados
+        const authRes = await fetch('http://localhost:5050/auth/status', {
+            method: 'GET',
+            credentials: 'include'
+        });
+        
+        if (!authRes.ok) {
+            window.location.href = '/NotiSync/frontend/index.html';
+            return;
+        }
+
+        const authData = await authRes.json();
+        document.querySelector('.user-name').textContent = authData.user;
+
+        // Carregar dados dos templates
+        const data = await fetchAPI(`/templates/?${new URLSearchParams({
             page,
             per_page: 10,
             ...filtros
-        });
-        
-        const data = await fetchAPI(`/templates/?${params}`);
+        })}`);
         const grid = document.querySelector('.templates-grid');
         if (!grid) return;
 
