@@ -1,7 +1,7 @@
 // Verificação de autenticação
 window.addEventListener('DOMContentLoaded', async () => {
     try {
-        const res = await fetch('http://localhost:5050/auth/status', {
+        const res = await fetch(`${API_BASE_URL}/auth/status`, {
             method: 'GET',
             credentials: 'include'
         });
@@ -26,7 +26,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 async function loadDashboardData() {
     try {
         // Carregar estatísticas
-        const statsRes = await fetch('http://localhost:5050/dashboard/resumo', {
+        const statsRes = await fetch(`${API_BASE_URL}/dashboard/resumo`, {
             method: 'GET',
             credentials: 'include'
         });
@@ -37,7 +37,7 @@ async function loadDashboardData() {
         }
 
         // Carregar atividades recentes
-        const activityRes = await fetch('http://localhost:5050/dashboard/recentes', {
+        const activityRes = await fetch(`${API_BASE_URL}/dashboard/recentes`, {
             method: 'GET',
             credentials: 'include'
         });
@@ -161,7 +161,7 @@ document.querySelectorAll('.action-button').forEach(button => {
 // Função para exportar relatório
 async function exportReport() {
     try {
-        const res = await fetch('http://localhost:5050/dashboard/export', {
+        const res = await fetch(`${API_BASE_URL}/dashboard/export`, {
             method: 'GET',
             credentials: 'include'
         });
@@ -201,7 +201,7 @@ searchInput.addEventListener('input', (e) => {
 
 async function searchNotifications(query) {
     try {
-        const res = await fetch(`http://localhost:5050/notifications/search?q=${encodeURIComponent(query)}`, {
+        const res = await fetch(`${API_BASE_URL}/notifications/search?q=${encodeURIComponent(query)}`, {
             method: 'GET',
             credentials: 'include'
         });

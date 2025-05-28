@@ -56,7 +56,7 @@ async function tryLogin(e) {
 
   try {
     // Envia pedido ao backend Flask
-    const res = await fetch('http://localhost:5050/auth/login', {
+    const res = await fetch(`${API_BASE_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',             // importante para cookies HttpOnly
