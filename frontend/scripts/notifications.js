@@ -105,46 +105,6 @@ async function exportarHistorico(formato = 'csv') {
     return response;
 }
 
-// Funções de Template
-async function listarTemplates(page = 1, filtros = {}) {
-    const params = new URLSearchParams({
-        page,
-        per_page: 10,
-        ...filtros
-    });
-    return await fetchAPI(`/templates/?${params}`);
-}
-
-async function obterTemplate(id) {
-    return await fetchAPI(`/templates/${id}`);
-}
-
-async function criarTemplate(dados) {
-    return await fetchAPI('/templates/', {
-        method: 'POST',
-        body: JSON.stringify(dados)
-    });
-}
-
-async function atualizarTemplate(id, dados) {
-    return await fetchAPI(`/templates/${id}`, {
-        method: 'PUT',
-        body: JSON.stringify(dados)
-    });
-}
-
-async function excluirTemplate(id) {
-    return await fetchAPI(`/templates/${id}`, {
-        method: 'DELETE'
-    });
-}
-
-async function duplicarTemplate(id) {
-    return await fetchAPI(`/templates/${id}/duplicar`, {
-        method: 'POST'
-    });
-}
-
 // Funções de carregamento de dados
 async function carregarNotificacoes(page = 1, filtros = {}) {
     try {
@@ -208,51 +168,6 @@ async function carregarNotificacoes(page = 1, filtros = {}) {
     } catch (error) {
         console.error('Erro ao carregar notificações:', error);
         showNotification('Erro ao carregar notificações', 'error');
-    }
-}
-
-async function carregarTemplates(page = 1, filtros = {}) {
-    try {
-        const data = await listarTemplates(page, filtros);
-        const grid = document.querySelector('.templates-grid');
-        if (!grid) return;
-
-        grid.innerHTML = data.templates.map(template => `
-            <div class="template-card">
-                <div class="template-header">
-                    <h3>${template.nome}</h3>
-                    <div class="template-actions">
-                        <button class="btn-action btn-edit" data-id="${template.id}" title="Editar">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn-action btn-duplicar" data-id="${template.id}" title="Duplicar">
-                            <i class="fas fa-copy"></i>
-                        </button>
-                        <button class="btn-action btn-excluir" data-id="${template.id}" title="Excluir">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="template-info">
-                    <span class="template-type ${template.tipo.toLowerCase()}">${template.tipo}</span>
-                    <span class="template-category ${template.categoria.toLowerCase()}">${template.categoria}</span>
-                </div>
-                <p class="template-description">${template.descricao || 'Sem descrição'}</p>
-                <div class="template-footer">
-                    <span class="template-status ${template.ativo ? 'ativo' : 'inativo'}">
-                        ${template.ativo ? 'Ativo' : 'Inativo'}
-                    </span>
-                    <span class="template-usage">
-                        <i class="fas fa-chart-bar"></i> ${template.uso} usos
-                    </span>
-                </div>
-            </div>
-        `).join('');
-
-        // Atualizar paginação
-        atualizarPaginacao(data.pagina, data.total_paginas);
-    } catch (error) {
-        console.error('Erro ao carregar templates:', error);
     }
 }
 
@@ -324,7 +239,6 @@ async function showNotificationDetails(id) {
                 <h3>Informações Adicionais</h3>
                 <p><strong>Prioridade:</strong> ${notif.prioridade}</p>
                 <p><strong>Tentativas:</strong> ${notif.tentativas}</p>
-                ${notif.template_id ? `<p><strong>Template:</strong> #${notif.template_id}</p>` : ''}
             </div>
         `;
         modal.classList.add('show');

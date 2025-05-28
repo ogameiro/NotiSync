@@ -50,7 +50,6 @@ async function showNotificationDetails(notificationId) {
                 <h3>Informações Adicionais</h3>
                 <p><strong>Prioridade:</strong> ${notification.prioridade}</p>
                 <p><strong>Tentativas:</strong> ${notification.tentativas}</p>
-                ${notification.template_id ? `<p><strong>Template:</strong> #${notification.template_id}</p>` : ''}
             </div>
         `;
         

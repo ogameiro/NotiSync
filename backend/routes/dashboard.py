@@ -27,7 +27,6 @@ class Notification(db.Model):
     __tablename__ = 'notifications'
     notification_id = db.Column(db.Integer, primary_key=True)
     type_id = db.Column(db.Integer, nullable=False)
-    template_id = db.Column(db.Integer)
     content_override = db.Column(db.Text)
     priority = db.Column(db.String(50), default='normal')
     category = db.Column(db.String(50))

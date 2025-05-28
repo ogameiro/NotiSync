@@ -151,9 +151,6 @@ document.querySelectorAll('.action-button').forEach(button => {
             case 'Nova Notificação':
                 window.location.href = '/NotiSync/frontend/pages/create-notification.html';
                 break;
-            case 'Criar Template':
-                window.location.href = '/NotiSync/frontend/pages/templates.html';
-                break;
             case 'Exportar Relatório':
                 exportReport();
                 break;

@@ -5,7 +5,6 @@ import config.settings as settings
 from routes.sessions import auth_bp
 from routes.dashboard import dashboard_bp
 from routes.notifications import notifications_bp
-from routes.templates import templates_bp
 
 def create_app():
     app = Flask(__name__)
@@ -36,7 +35,6 @@ def create_app():
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(notifications_bp)
-    app.register_blueprint(templates_bp)
 
     @app.route('/', methods=['GET'])
     def home():

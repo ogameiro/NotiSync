@@ -11,7 +11,6 @@ notifications_bp = Blueprint('notifications', __name__, url_prefix='/notificatio
 
 # Modelos da base de dados
 from routes.dashboard import Notification, NotificationLog, NotificationType, NotificationStatus, Channel
-from routes.templates import Template  # Importando Template do arquivo correto
 
 # Listar notificações
 @notifications_bp.route('/', methods=['GET'])
@@ -111,7 +110,6 @@ def obter_notificacao(notification_id):
         'canais': canal.name,
         'data': log.attempted_at.strftime('%Y-%m-%d %H:%M:%S') if log.attempted_at else '---',
         'erro': log.error_message,
-        'template_id': notif.template_id if hasattr(notif, 'template_id') else None,
         'prioridade': notif.priority if hasattr(notif, 'priority') else 'Normal',
         'tentativas': log.attempts if hasattr(log, 'attempts') else 1
     })
@@ -144,20 +142,6 @@ def criar_notificacao():
             current_app.logger.warning(f"Tipo de notificação não encontrado: {data['tipo_id']}")
             return jsonify({'message': f'Tipo de notificação com ID {data["tipo_id"]} não encontrado'}), 400
 
-        # Verificar se o template_id existe, se fornecido
-        if 'template_id' in data and data['template_id']:
-            current_app.logger.info(f"Verificando template_id: {data['template_id']}")
-            try:
-                template_id = int(data['template_id'])
-                template = db.session.query(Template).filter_by(template_id=template_id).first()
-                if not template:
-                    current_app.logger.warning(f"Template não encontrado: {template_id}")
-                    return jsonify({'message': f'Template com ID {template_id} não encontrado'}), 400
-                current_app.logger.info(f"Template encontrado: {template.name}")
-            except (ValueError, TypeError) as e:
-                current_app.logger.error(f"Erro ao converter template_id: {e}")
-                return jsonify({'message': 'ID do template inválido'}), 400
-
         # Preparar dados da notificação
         notification_data = {
             'type_id': data['tipo_id'],
@@ -165,10 +149,6 @@ def criar_notificacao():
             'content_override': data['conteudo'],
             'priority': data.get('prioridade', 'Normal')
         }
-
-        # Adicionar template_id apenas se fornecido e existir
-        if 'template_id' in data and data['template_id']:
-            notification_data['template_id'] = int(data['template_id'])
 
         current_app.logger.info(f"Dados da notificação: {notification_data}")
 

@@ -106,22 +106,6 @@ async function saveNotification() {
             prioridade: formData.get('priority') || 'Normal'
         };
 
-        // Adiciona template_id apenas se um template foi selecionado
-        const templateSelect = document.getElementById('template');
-        if (templateSelect && templateSelect.value) {
-            try {
-                const templateId = parseInt(templateSelect.value);
-                if (!isNaN(templateId)) {
-                    notificationData.template_id = templateId;
-                    console.log('Template ID selecionado:', templateId);
-                } else {
-                    console.warn('Valor do template inválido:', templateSelect.value);
-                }
-            } catch (error) {
-                console.error('Erro ao processar template_id:', error);
-            }
-        }
-
         console.log('Dados da notificação:', notificationData);
 
         // Envia para a API usando a função fetchAPI
@@ -183,51 +167,6 @@ async function carregarTiposNotificacao() {
     }
 }
 
-// Carregar templates disponíveis
-async function carregarTemplates() {
-    try {
-        const response = await fetchAPI('/templates/');
-        console.log('Resposta da API de templates:', response);
-        
-        if (!response.templates) {
-            throw new Error('Formato de resposta inválido');
-        }
-        
-        const select = document.getElementById('template');
-        if (!select) {
-            console.error('Elemento select de template não encontrado');
-            return;
-        }
-
-        // Limpar opções existentes
-        select.innerHTML = '';
-
-        // Adicionar opção vazia
-        const emptyOption = document.createElement('option');
-        emptyOption.value = '';
-        emptyOption.textContent = 'Selecione um template (opcional)';
-        select.appendChild(emptyOption);
-
-        // Adicionar novos templates
-        let templatesAtivos = 0;
-        response.templates.forEach(template => {
-            if (template.ativo) {
-                templatesAtivos++;
-                const option = document.createElement('option');
-                option.value = template.id;
-                option.textContent = template.nome;
-                select.appendChild(option);
-                console.log('Template adicionado:', template.id, template.nome);
-            }
-        });
-        console.log(`Total de templates ativos: ${templatesAtivos}`);
-
-    } catch (error) {
-        console.error('Erro ao carregar templates:', error);
-        showError('Não foi possível carregar os templates');
-    }
-}
-
 // Verificação de autenticação
 window.addEventListener('DOMContentLoaded', async () => {
     try {
@@ -247,24 +186,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         // Carregar dados iniciais
         await Promise.all([
             carregarTiposNotificacao(),
-            carregarTemplates()
         ]);
-
-        // Event listener para mudança de template
-        const templateSelect = document.getElementById('template');
-        if (templateSelect) {
-            templateSelect.addEventListener('change', async (e) => {
-                if (e.target.value) {
-                    try {
-                        const template = await fetchAPI(`/templates/${e.target.value}`);
-                        document.getElementById('content').value = template.conteudo;
-                    } catch (error) {
-                        console.error('Erro ao carregar template:', error);
-                        showError('Não foi possível carregar o template selecionado');
-                    }
-                }
-            });
-        }
     } catch (error) {
         console.error('Erro ao verificar autenticação:', error);
         window.location.href = '/NotiSync/frontend/index.html';
