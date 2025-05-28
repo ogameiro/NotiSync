@@ -1,3 +1,28 @@
+// Função para validar o tamanho da mensagem
+function validateMessageLength() {
+    const smsCheckbox = document.querySelector('input[name="channels"][value="sms"]');
+    const contentTextarea = document.getElementById('content');
+    const contentError = document.getElementById('content-error') || (() => {
+        const error = document.createElement('div');
+        error.id = 'content-error';
+        error.className = 'error-message';
+        error.style.display = 'none';
+        error.style.color = '#dc2626';
+        error.style.marginTop = '0.5rem';
+        contentTextarea.parentNode.appendChild(error);
+        return error;
+    })();
+
+    if (smsCheckbox.checked && contentTextarea.value.length > 120) {
+        contentError.textContent = 'A mensagem não pode ter mais de 120 caracteres quando o canal SMS está selecionado';
+        contentError.style.display = 'block';
+        return false;
+    }
+
+    contentError.style.display = 'none';
+    return true;
+}
+
 // Função para validar os canais selecionados
 function validateChannels() {
     const emailCheckbox = document.querySelector('input[name="channels"][value="email"]');
@@ -14,7 +39,16 @@ function validateChannels() {
 
     // Se houver destinatários, valida-os
     if (recipientsTextarea.value.trim()) {
-        validateRecipients();
+        if (!validateRecipients()) {
+            return false;
+        }
+    }
+
+    // Valida o tamanho da mensagem se SMS estiver selecionado
+    if (smsCheckbox.checked) {
+        if (!validateMessageLength()) {
+            return false;
+        }
     }
 
     recipientsError.style.display = 'none';
@@ -79,7 +113,7 @@ function validateRecipients() {
 
 // Função para salvar a notificação
 async function saveNotification() {
-    if (!validateChannels() || !validateRecipients()) {
+    if (!validateChannels() || !validateRecipients() || !validateMessageLength()) {
         return;
     }
 

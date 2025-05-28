@@ -1,6 +1,7 @@
 from datetime import datetime
 from config.settings import db
 from config.email_config import send_email, verify_sendgrid_config
+from config.twilio_config import send_sms, verify_twilio_config
 from routes.dashboard import NotificationLog, Notification, NotificationStatus, Channel
 import re
 
@@ -31,6 +32,11 @@ class NotificationService:
         is_valid, error_message = verify_sendgrid_config()
         if not is_valid:
             return False, f"Configuração de email inválida: {error_message}"
+        
+        # Verificar configuração do Twilio
+        is_valid, error_message = verify_twilio_config()
+        if not is_valid:
+            return False, f"Configuração de SMS inválida: {error_message}"
         
         # Verificar canais no banco de dados
         email_channel = Channel.query.filter_by(name='Email').first()
@@ -115,16 +121,17 @@ class NotificationService:
                                 subject=f"Notificação #{notification_id}",
                                 content=notification.content_override
                             )
-                            
-                            if success:
-                                log.status_id = status_enviado.status_id
-                            else:
-                                log.status_id = status_erro.status_id
-                                log.error_message = message
                         else:  # SMS
-                            # TODO: Implementar integração com Twilio
+                            success, message = send_sms(
+                                to_phone=recipient,
+                                content=notification.content_override
+                            )
+                            
+                        if success:
+                            log.status_id = status_enviado.status_id
+                        else:
                             log.status_id = status_erro.status_id
-                            log.error_message = "Canal SMS não implementado"
+                            log.error_message = message
 
                     except Exception as e:
                         log.status_id = status_erro.status_id
