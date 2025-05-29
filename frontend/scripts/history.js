@@ -1,7 +1,7 @@
 // Funções de API
 async function fetchAPI(endpoint, options = {}) {
     try {
-        const response = await fetch(`http://130.61.232.251:5050${endpoint}`, {
+        const response = await fetch(`http://localhost:5050${endpoint}`, {
             ...options,
             credentials: 'include',
             headers: {
@@ -64,7 +64,7 @@ async function showNotificationDetails(notificationId) {
 async function carregarHistorico(page = 1, filtros = {}) {
     try {
         // Verificar autenticação antes de carregar dados
-        const authRes = await fetch('http://130.61.232.251:5050/auth/status', {
+        const authRes = await fetch('http://localhost:5050/auth/status', {
             method: 'GET',
             credentials: 'include'
         });
@@ -232,7 +232,7 @@ function atualizarPaginacao(paginaAtual, totalPaginas) {
 // Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
     // Verificar autenticação
-    fetch('http://130.61.232.251:5050/auth/status', {
+    fetch('http://localhost:5050/auth/status', {
         method: 'GET',
         credentials: 'include'
     }).then(res => {

@@ -163,7 +163,7 @@ async function saveNotification() {
 // Carregar tipos de notificação
 async function carregarTiposNotificacao() {
     try {
-        const response = await fetch(`${API_BASE_URL}/dashboard/notificationtypes/`, {
+        const response = await fetch('http://localhost:5050/dashboard/notificationtypes/', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -204,7 +204,7 @@ async function carregarTiposNotificacao() {
 // Verificação de autenticação
 window.addEventListener('DOMContentLoaded', async () => {
     try {
-        const res = await fetch(`${API_BASE_URL}/auth/status`, {
+        const res = await fetch('http://localhost:5050/auth/status', {
             method: 'GET',
             credentials: 'include'
         });

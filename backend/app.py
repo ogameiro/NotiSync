@@ -23,10 +23,10 @@ def create_app():
     app.config.from_object(settings)
 
     # --- ATIVA O CORS ---
-    # Permite todas as rotas da API para o IP do servidor
+    # Permite todas as rotas da API para http://localhost e http://localhost:5050
     CORS(app,
          supports_credentials=True,
-         origins=["http://130.61.232.251", "http://130.61.232.251:5050"],
+         origins=["http://localhost", "http://localhost:5050", "http://127.0.0.1", "http://127.0.0.1:5050"],
          allow_headers=["Content-Type", "Authorization"],
          methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
          expose_headers=["Content-Type", "Authorization"]

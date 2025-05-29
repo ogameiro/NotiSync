@@ -8,25 +8,24 @@
     <script src="https://kit.fontawesome.com/c990447127.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="/NotiSync/frontend/css/basic.css">
     <link rel="stylesheet" href="/NotiSync/frontend/css/login.css">
-    <script src="/NotiSync/frontend/scripts/config.js"></script>
     <script>
     // Ao carregar a página de login, verifica sessão
     window.addEventListener('DOMContentLoaded', async () => {
         try {
-            const res = await fetch(`${API_BASE_URL}/auth/status`, {
-                method: 'GET',
-                credentials: 'include'  // envia o cookie JWT
-            });
-            
-            if (res.ok) {
-                // Já está autenticado → vai para o dashboard
-                window.location.href = '/NotiSync/frontend/pages/dashboard.html';
-            }
-            
-            // se 401 ou outro, fica na página de login
+            const res = await fetch('http://localhost:5050/auth/status', {
+            method: 'GET',
+            credentials: 'include'  // envia o cookie JWT
+        });
+        
+        if (res.ok) {
+            // Já está autenticado → vai para o dashboard
+            window.location.href = '/NotiSync/frontend/pages/dashboard.html';
+        }
+        
+        // se 401 ou outro, fica na página de login
         } catch (err) {
-            console.error('Não foi possível verificar sessão:', err);
-            // fica na página de login
+        console.error('Não foi possível verificar sessão:', err);
+        // fica na página de login
         }
     });
     </script>

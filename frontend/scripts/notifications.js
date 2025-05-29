@@ -23,7 +23,7 @@ function showNotification(message, type = 'info') {
 // Função de Logout Unificada
 async function logout() {
     try {
-        const response = await fetch(`${API_BASE_URL}/auth/logout`, {
+        const response = await fetch('http://localhost:5050/auth/logout', {
             method: 'POST',
             credentials: 'include'
         });
@@ -45,7 +45,7 @@ async function logout() {
 // Funções de API
 async function fetchAPI(endpoint, options = {}) {
     try {
-        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        const response = await fetch(`http://localhost:5050${endpoint}`, {
             ...options,
             credentials: 'include',
             headers: {
@@ -109,7 +109,7 @@ async function exportarHistorico(formato = 'csv') {
 async function carregarNotificacoes(page = 1, filtros = {}) {
     try {
         // Verificar autenticação antes de carregar dados
-        const authRes = await fetch(`${API_BASE_URL}/auth/status`, {
+        const authRes = await fetch('http://localhost:5050/auth/status', {
             method: 'GET',
             credentials: 'include'
         });
@@ -298,7 +298,7 @@ function atualizarPaginacao(paginaAtual, totalPaginas) {
 // Inicialização
 document.addEventListener('DOMContentLoaded', () => {
     // Verificar autenticação
-    fetch(`${API_BASE_URL}/auth/status`, {
+    fetch('http://localhost:5050/auth/status', {
         method: 'GET',
         credentials: 'include'
     }).then(res => {
